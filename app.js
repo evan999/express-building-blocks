@@ -20,6 +20,14 @@ app.get('/blocks', function(request, response){
    response.redirect(301, '/parts'); 
 });
 
+/*
+app.get('/', function(request, response){
+    response.sendFile(__dirname + '/public/index.html');
+});
+*/
+// Static middleware
+app.use(express.static('public'));
+
 app.listen(process.env.PORT, process.env.IP, 8080, function(){
     console.log('Listening on port 8080');
 });
