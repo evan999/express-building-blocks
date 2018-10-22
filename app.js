@@ -7,7 +7,7 @@ app.use(logger);
 
 var blocks = {
   'Fixed': 'Fastened securely in position',
-  'Movable': 'Caable of being moved',
+  'Movable': 'Capable of being moved',
   'Rotating': 'Moving in a circle around its center'
 };
 
@@ -16,10 +16,16 @@ app.use(express.static('public'));
 
 
 
-app.get('/blocks:name', function(request, response){
+app.get('/blocks/:name', function(request, response){
     //var blocks = ['Fixed', 'Movable', 'Rotating'];
     var description = blocks[request.params.name];
-    response.json(description);
+    
+    if(!description){
+        response.status(404).json('No description found for ' + request.params.name);
+    }
+    else{
+        response.json(description);
+    }
     /*
     if(request.query.limit >= 0){
         response.json(blocks.slice(0, request.query.limit));
