@@ -2,6 +2,9 @@ var http = require('http');
 var express = require('express');
 var app = express();
 
+var bodyParser = require('body-parser');
+var parseUrlencoded = bodyParser.urlencoded({extended: false});
+
 var logger = require('./logger');
 app.use(logger);
 
@@ -10,6 +13,8 @@ var blocks = {
   'Movable': 'Capable of being moved',
   'Rotating': 'Moving in a circle around its center'
 };
+
+
 
 app.get('/blocks', function(request, response){
    response.json(Object.keys(blocks)); 
@@ -59,6 +64,18 @@ app.get('/locations/:name', function(request, response){
     var block = name[0].toUpperCase() + name.slice(1).toLowerCase();
     var location = locations[request.blockName];
     
+});
+
+app.delete('/blocks/:name', function(request, response){
+   delete blocks[request.blockName];
+   response.sendStatus(200);
+});
+
+app.post('/blocks', parseUrlencoded, function(request, response){
+    var newBlock = request.body;
+    blocks[newBlock.name] = newBlock.description;
+    
+    response.status(201).json(newBlock.name);
 });
 
 app.listen(process.env.PORT, process.env.IP, 8080, function(){
