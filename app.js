@@ -11,6 +11,28 @@ var blocks = {
   'Rotating': 'Moving in a circle around its center'
 };
 
+app.get('/blocks', function(request, response){
+   response.json(Object.keys(blocks)); 
+});
+
+var locations = {
+    'Fixed': 'First floor', 
+    'Movable': 'Second floor', 
+    'Rotating': 'Penthouse'
+}
+
+app.param('name', function(request, response, next){
+    var name = request.params.name;
+    var block = name[0].toUpperCase() + name.slice(1).toLowerCase();
+    
+    request.blockName = block;
+    
+    next();
+    
+});
+
+
+
 // Static middleware
 app.use(express.static('public'));
 
@@ -18,6 +40,10 @@ app.use(express.static('public'));
 
 app.get('/blocks/:name', function(request, response){
     //var blocks = ['Fixed', 'Movable', 'Rotating'];
+    var name = request.params.name;
+    var block = name[0].toUpperCase() + name.slice(1).toLowerCase();
+    var description = blocks[request.blockName];
+    
     var description = blocks[request.params.name];
     
     if(!description){
@@ -26,14 +52,13 @@ app.get('/blocks/:name', function(request, response){
     else{
         response.json(description);
     }
-    /*
-    if(request.query.limit >= 0){
-        response.json(blocks.slice(0, request.query.limit));
-    }
-    else{
-    response.json(blocks);
-    }
-    */
+});
+
+app.get('/locations/:name', function(request, response){
+    var name = request.params.name;
+    var block = name[0].toUpperCase() + name.slice(1).toLowerCase();
+    var location = locations[request.blockName];
+    
 });
 
 app.listen(process.env.PORT, process.env.IP, 8080, function(){
